@@ -6,11 +6,11 @@
   1) "DERJ_LOGO_URL_IDE" — a DÉR Juice logó (lehetőleg átlátszó hátterű PNG) URL-je
   2) "DERJ_SZABALYZAT_LINK_IDE" — a játékszabályzat dokumentum linkje
   3) "DERJ_ADATKEZELES_LINK_IDE" — az adatkezelési tájékoztató linkje
-
-  A feliratkozási adatok (név, email, pontszám) jelenleg a böngésző memóriájában
-  gyűlnek a window.__derJuiceSubscribers tömbben. Éles használathoz kösd össze
-  egy backenddel (pl. Make.com webhook vagy Google Sheet) a signupForm submit
-  eseménykezelőjében jelölt helyen.
+  A feliratkozási webhook már élesben be van kötve: minden feliratkozó
+  (név, email, pontszám, időbélyeg) automatikusan megérkezik a Make.com
+  "DÉR Juice feliratkozók" Data Store-jába (Data store ID: 175247,
+  scenario ID: 9599238, csapat: My Team). A böngésző memóriájában emellett
+  helyi biztonsági másolat is marad (window.__derJuiceSubscribers).
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -680,11 +680,27 @@
     }
     errorEl.textContent = "";
 
-    // A feliratkozásokat itt gyűjtjük memóriában (subscribers tömb).
-    // Éles bevezetéskor ezt egy valós backendre (pl. Make.com webhook,
-    // Google Sheet vagy CRM) érdemes kötni.
+    // A feliratkozást elküldjük egy Make.com webhookra, ami innen egy
+    // Google Sheetbe (vagy más rendszerbe) tudja írni a jelentkezőket.
+    // Cseréld a WEBHOOK_URL értékét a saját Make webhook URL-edre.
+    var WEBHOOK_URL = "https://hook.eu2.make.com/aythfxa1iwx9721k3sqp54df0b973nmc";
+    var payload = { name:name, email:email, score:lastScoreForSignup, source:"der-juice-gyumolcsfogo" };
+
+    if(WEBHOOK_URL && WEBHOOK_URL.indexOf("http") === 0){
+      fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch(function(err){
+        console.error("DÉR Juice feliratkozás webhook hiba:", err);
+      });
+    } else {
+      console.warn("DÉR Juice: nincs beállítva webhook URL, a feliratkozás csak helyben (memóriában) tárolódik.");
+    }
+
+    // Helyi biztonsági másolat is marad a böngésző memóriájában.
     window.__derJuiceSubscribers = window.__derJuiceSubscribers || [];
-    window.__derJuiceSubscribers.push({ name:name, email:email, score:lastScoreForSignup });
+    window.__derJuiceSubscribers.push(payload);
 
     root.querySelector("#derjThanksMsg").textContent =
       name + ", rögzítettük a jelentkezésed " + lastScoreForSignup + " ponttal. Hamarosan jelentkezünk a nyertesekkel.";
