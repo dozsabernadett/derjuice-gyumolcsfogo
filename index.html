@@ -1,0 +1,699 @@
+<!--
+  DÉR JUICE — NYÁRI NYEREMÉNYJÁTÉK, BEÁGYAZHATÓ KÓDRÉSZLET
+  Illeszd be egy egyéni HTML blokkba az aloldalon.
+
+  Kitöltendő helyek (Ctrl+F rájuk):
+  1) "DERJ_LOGO_URL_IDE" — a DÉR Juice logó (lehetőleg átlátszó hátterű PNG) URL-je
+  2) "DERJ_SZABALYZAT_LINK_IDE" — a játékszabályzat dokumentum linkje
+  3) "DERJ_ADATKEZELES_LINK_IDE" — az adatkezelési tájékoztató linkje
+
+  A feliratkozási adatok (név, email, pontszám) jelenleg a böngésző memóriájában
+  gyűlnek a window.__derJuiceSubscribers tömbben. Éles használathoz kösd össze
+  egy backenddel (pl. Make.com webhook vagy Google Sheet) a signupForm submit
+  eseménykezelőjében jelölt helyen.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  #derj-landing, #derj-landing *{ box-sizing:border-box; }
+  #derj-landing{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color:#000000;
+    background:#F3EEEA;
+    padding:56px 16px 64px;
+    line-height:1.5;
+  }
+  #derj-landing .derj-inner{ max-width:920px; margin:0 auto; }
+  #derj-landing h1, #derj-landing h2{
+    font-family:'Playfair Display', Georgia, serif;
+    margin:0;
+    color:#000000;
+  }
+
+  /* ---------- HERO ---------- */
+  #derj-landing .derj-hero{ text-align:center; padding-bottom:40px; }
+  #derj-landing .derj-logo-badge{ width:120px; margin:0 auto 22px; }
+  #derj-landing .derj-logo-badge img{ width:100%; height:auto; display:block; }
+  #derj-landing .derj-h1{ font-size:2.2rem; font-weight:700; letter-spacing:-.01em; }
+  #derj-landing .derj-lead{
+    max-width:480px; margin:16px auto 0;
+    font-size:1.02rem; color:#3A322E;
+  }
+  #derj-landing .derj-btn{
+    display:inline-block;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight:600;
+    font-size:.95rem;
+    background:#CA6E6C;
+    color:#FFFFFF;
+    border:none;
+    border-radius:999px;
+    padding:13px 32px;
+    text-decoration:none;
+    cursor:pointer;
+    margin-top:24px;
+    box-shadow:0 8px 18px rgba(202,110,108,.35);
+    transition:transform .15s ease, background .15s ease;
+  }
+  #derj-landing .derj-btn:hover{ background:#B4595A; transform:translateY(-2px); }
+  #derj-landing .derj-btn:focus-visible{ outline:3px solid #856157; outline-offset:2px; }
+  #derj-landing .derj-btn-ghost{
+    background:none; color:#856157; box-shadow:none;
+    text-decoration:underline; padding:6px 10px; font-weight:500;
+  }
+  #derj-landing .derj-btn-ghost:hover{ background:none; color:#000000; transform:none; }
+
+  /* ---------- BENEFITS ---------- */
+  #derj-landing .derj-benefits{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;
+    margin-top:8px;
+  }
+  @media (max-width:720px){
+    #derj-landing .derj-benefits{ grid-template-columns:1fr; }
+  }
+  #derj-landing .derj-benefit-card{
+    background:#FFFFFF; border-radius:16px; padding:24px 20px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+  }
+  #derj-landing .derj-dot{
+    width:14px; height:14px; border-radius:50%; margin-bottom:14px;
+  }
+  #derj-landing .derj-benefit-card h3{
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:1.05rem; margin:0 0 8px; font-weight:700;
+  }
+  #derj-landing .derj-benefit-card p{
+    font-size:.88rem; color:#3A322E; margin:0;
+  }
+
+  /* ---------- GAME SECTION ---------- */
+  #derj-landing .derj-game-section{ padding:56px 16px 8px; text-align:center; }
+  #derj-landing .derj-h2{ font-size:1.7rem; font-weight:700; }
+  #derj-landing .derj-game-sub{
+    max-width:440px; margin:12px auto 30px;
+    font-size:.94rem; color:#3A322E;
+  }
+  #derj-landing .derj-shell{
+    width:100%; max-width:440px; margin:0 auto;
+    background:#FFFFFF; border-radius:26px; padding:16px 16px 20px;
+    box-shadow:0 14px 34px rgba(0,0,0,.14);
+  }
+  #derj-landing .derj-stage{
+    position:relative; width:100%; aspect-ratio:3/4;
+    border-radius:18px; overflow:hidden;
+    background:linear-gradient(#AEDCEA, #F2F7E4);
+    touch-action:none; outline:none;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,.45);
+  }
+  #derj-landing .derj-cloud{
+    position:absolute; background:#fff; opacity:.75; border-radius:50%; filter:blur(1px);
+  }
+  #derj-landing .derj-cloud-a{ width:22%; height:7%; top:8%; left:-25%; animation:derjDriftA 38s linear infinite; }
+  #derj-landing .derj-cloud-b{ width:16%; height:5%; top:17%; left:-30%; animation:derjDriftA 52s linear infinite; animation-delay:-18s; }
+  @keyframes derjDriftA{ from{ transform:translateX(0); } to{ transform:translateX(650px); } }
+  @media (prefers-reduced-motion: reduce){ #derj-landing .derj-cloud{ animation:none; } }
+
+  #derj-landing .derj-tree{ position:absolute; top:-4%; width:36%; }
+  #derj-landing .derj-tree-left{ left:-9%; }
+  #derj-landing .derj-tree-right{ right:-9%; transform:scaleX(-1); }
+  #derj-landing .derj-tree svg{ width:100%; display:block; }
+
+  #derj-landing .derj-grass{
+    position:absolute; left:0; right:0; bottom:0; height:13%;
+    background:linear-gradient(#8FB35E, #5B7F3A);
+    border-top-left-radius:50% 22px; border-top-right-radius:50% 22px;
+  }
+
+  #derj-landing .derj-hud{
+    position:absolute; top:8px; left:8px; right:8px;
+    display:flex; justify-content:space-between; gap:6px;
+    z-index:5; pointer-events:none;
+  }
+  #derj-landing .derj-chip{
+    background:#FBF4E6; border:1.5px dashed #9C351F; border-radius:10px;
+    padding:3px 10px 5px; font-size:.62rem; text-align:center; line-height:1.15;
+    box-shadow:0 3px 7px rgba(0,0,0,.18); transform:rotate(-2deg); min-width:52px;
+  }
+  #derj-landing .derj-chip:nth-child(2){ transform:rotate(1deg); }
+  #derj-landing .derj-chip:nth-child(3){ transform:rotate(2deg); }
+  #derj-landing .derj-chip span{
+    display:block; font-family:'Playfair Display', serif; font-weight:700;
+    font-size:1.05rem; color:#9C351F;
+  }
+  #derj-landing .derj-lives-val span{ font-size:1rem; }
+  #derj-landing .derj-lives-val span.derj-lost{ opacity:.25; filter:grayscale(1); }
+
+  #derj-landing .derj-fruit-layer{ position:absolute; inset:0; z-index:3; }
+  #derj-landing .derj-fruit{
+    position:absolute; width:14%; aspect-ratio:1/1;
+    filter:drop-shadow(0 4px 4px rgba(0,0,0,.28));
+  }
+  #derj-landing .derj-fruit svg{ width:100%; height:100%; display:block; }
+
+  #derj-landing .derj-popup{
+    position:absolute; font-family:'Playfair Display', serif; font-weight:700;
+    color:#9C351F; font-size:1rem; z-index:6; pointer-events:none;
+    animation:derjPopupFloat .7s ease-out forwards;
+  }
+  @keyframes derjPopupFloat{
+    from{ opacity:1; transform:translateY(0); }
+    to{ opacity:0; transform:translateY(-30px); }
+  }
+
+  #derj-landing .derj-basket{
+    position:absolute; bottom:2%; left:35%; width:30%; aspect-ratio:200/130; z-index:4;
+  }
+  #derj-landing .derj-basket svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 6px 6px rgba(0,0,0,.32)); }
+  #derj-landing .derj-basket.derj-shake{ animation:derjShake .35s; }
+  @keyframes derjShake{
+    10%,90%{ transform:translateX(-4%); }
+    20%,80%{ transform:translateX(4%); }
+    30%,50%,70%{ transform:translateX(-6%); }
+    40%,60%{ transform:translateX(6%); }
+  }
+
+  #derj-landing .derj-flash{
+    position:absolute; inset:0; background:rgba(202,110,108,.4);
+    opacity:0; pointer-events:none; z-index:7; transition:opacity .12s ease;
+  }
+  #derj-landing .derj-flash.derj-show{ opacity:1; }
+
+  #derj-landing .derj-overlay{
+    position:absolute; inset:0; background:rgba(251,244,230,.97);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:26px 22px; gap:14px; z-index:10;
+  }
+  #derj-landing .derj-overlay.derj-hidden{ display:none; }
+  #derj-landing .derj-overlay h2{ font-size:1.4rem; }
+  #derj-landing .derj-overlay p{ font-size:.88rem; margin:0; max-width:270px; }
+  #derj-landing .derj-score-big{
+    font-family:'Playfair Display', serif; font-weight:700; font-size:2.6rem;
+    color:#9C351F; line-height:1;
+  }
+  #derj-landing .derj-fruit-strip{ display:flex; gap:6px; margin:2px 0; }
+  #derj-landing .derj-fruit-strip span{ width:30px; height:30px; display:block; }
+  #derj-landing .derj-fruit-strip span svg{ width:100%; height:100%; display:block; }
+
+  #derj-landing .derj-form-row{ display:flex; flex-direction:column; gap:4px; width:100%; max-width:250px; text-align:left; }
+  #derj-landing label{ font-size:.72rem; font-weight:600; color:#856157; }
+  #derj-landing input{
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:.92rem;
+    padding:10px 12px; border-radius:10px; border:1.5px solid #EFE3CB;
+    background:#fff; color:#000000; width:100%;
+  }
+  #derj-landing input:focus-visible{ outline:2px solid #856157; border-color:#856157; }
+  #derj-landing .derj-error{ color:#9C351F; font-size:.74rem; min-height:1em; }
+
+  #derj-landing .derj-hint{ text-align:center; font-size:.7rem; color:#856157; opacity:.85; margin:10px 4px 0; }
+
+  /* ---------- RULES & FOOTER ---------- */
+  #derj-landing .derj-rules{
+    margin-top:56px; background:#FFFFFF; border-radius:16px;
+    padding:28px 26px; text-align:center;
+  }
+  #derj-landing .derj-rules p{ max-width:520px; margin:12px auto 18px; font-size:.92rem; color:#3A322E; }
+  #derj-landing .derj-rules-link{ color:#9C351F; font-weight:600; text-decoration:underline; }
+  #derj-landing .derj-footer{ margin-top:32px; text-align:center; }
+  #derj-landing .derj-footer p{ font-size:.78rem; color:#856157; max-width:520px; margin:6px auto; }
+  #derj-landing .derj-footer a{ color:#856157; }
+</style>
+
+<div id="derj-landing">
+
+  <div class="derj-inner">
+    <header class="derj-hero">
+      <div class="derj-logo-badge">
+        <!-- Cseréld a src-t a DÉR Juice logó (lehetőleg átlátszó PNG) URL-jére -->
+        <img src="DERJ_LOGO_URL_IDE" alt="DÉR Juice logó">
+      </div>
+      <h1 class="derj-h1">Gyűjtsd be a nyár ízeit</h1>
+      <p class="derj-lead">Kapd el a lehulló gyümölcsöket a kosaradba, és nyerj a DÉR Juice nyári nyereményjátékán. Minél többet gyűjtesz, annál nagyobb az esélyed a nyereményre.</p>
+      <a href="#derj-game" class="derj-btn">Játsszunk</a>
+    </header>
+
+    <section class="derj-benefits">
+      <div class="derj-benefit-card">
+        <div class="derj-dot" style="background:#00A76D;"></div>
+        <h3>100% natúr összetevők</h3>
+        <p>A DÉR Juice leveit érett, válogatott gyümölcsökből készítjük, tartósítószer és hozzáadott cukor nélkül.</p>
+      </div>
+      <div class="derj-benefit-card">
+        <div class="derj-dot" style="background:#645094;"></div>
+        <h3>Üvegpalackos minőség</h3>
+        <p>Minden levünk újrahasznosítható üvegpalackba kerül, hogy a gyümölcs íze és értéke is megmaradjon.</p>
+      </div>
+      <div class="derj-benefit-card">
+        <div class="derj-dot" style="background:#F36F21;"></div>
+        <h3>Szezonális válogatás</h3>
+        <p>Almától a homoktövisig mindig az adott évszak legjobb gyümölcseiből dolgozunk.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="derj-game-section" id="derj-game">
+    <h2 class="derj-h2">Gyümölcsfogó játék</h2>
+    <p class="derj-game-sub">Harminc másodperced van, hogy minél több gyümölcsöt gyűjts össze. Két életed van, utána jöhet a feliratkozás a nyereményjátékra.</p>
+
+    <div class="derj-shell">
+      <div class="derj-stage" id="derjStage" tabindex="0" aria-label="Gyümölcsfogó játék, mozgasd a kosarat a nyílbillentyűkkel">
+        <div class="derj-cloud derj-cloud-a"></div>
+        <div class="derj-cloud derj-cloud-b"></div>
+        <div class="derj-tree derj-tree-left" id="derjTreeLeft"></div>
+        <div class="derj-tree derj-tree-right" id="derjTreeRight"></div>
+        <div class="derj-grass"></div>
+
+        <div class="derj-hud">
+          <div class="derj-chip">Pontok<span id="derjScoreVal">0</span></div>
+          <div class="derj-chip">Idő<span id="derjTimerVal">30</span></div>
+          <div class="derj-chip derj-lives-val" id="derjLivesVal">Élet<span></span></div>
+        </div>
+
+        <div class="derj-fruit-layer" id="derjFruitLayer"></div>
+        <div class="derj-basket" id="derjBasket"></div>
+        <div class="derj-flash" id="derjFlash"></div>
+
+        <div class="derj-overlay" id="derjScreenStart">
+          <h2>Gyűjtsd be a nyár ízeit</h2>
+          <p>Mozgasd a fonott kosarat, és kapd el a fáról hulló gyümölcsöket, mielőtt földet érnek. Két életed van, minden elszalasztott gyümölcs elvesz belőle egyet.</p>
+          <div class="derj-fruit-strip" id="derjFruitStrip"></div>
+          <button class="derj-btn" id="derjBtnStart">Játék indítása</button>
+        </div>
+
+        <div class="derj-overlay derj-hidden" id="derjScreenGameOver">
+          <h2 id="derjGameOverTitle">Vége a játéknak</h2>
+          <div class="derj-score-big" id="derjGameOverScore">0</div>
+          <p id="derjGameOverText">gyümölcsöt gyűjtöttél össze.</p>
+          <button class="derj-btn" id="derjBtnContinue">Tovább a nyereményjátékhoz</button>
+          <button class="derj-btn derj-btn-ghost" id="derjBtnRetry">Újrajátszom</button>
+        </div>
+
+        <div class="derj-overlay derj-hidden" id="derjScreenSignup">
+          <h2>Nyári nyereményjáték</h2>
+          <p>Add meg a neved és az email címed, és részt veszel a DÉR Juice nyári nyereményjátékában az elért pontszámoddal.</p>
+          <form id="derjSignupForm">
+            <div class="derj-form-row">
+              <label for="derjNameInput">Név</label>
+              <input type="text" id="derjNameInput" autocomplete="name" required>
+            </div>
+            <div class="derj-form-row" style="margin-top:8px;">
+              <label for="derjEmailInput">Email cím</label>
+              <input type="email" id="derjEmailInput" autocomplete="email" required>
+            </div>
+            <div class="derj-error" id="derjFormError"></div>
+            <button class="derj-btn" type="submit" style="margin-top:6px;">Feliratkozom</button>
+          </form>
+        </div>
+
+        <div class="derj-overlay derj-hidden" id="derjScreenThanks">
+          <h2>Köszönjük a feliratkozást</h2>
+          <p id="derjThanksMsg">Rögzítettük a jelentkezésed.</p>
+          <button class="derj-btn" id="derjBtnPlayAgain">Új játék</button>
+        </div>
+      </div>
+      <p class="derj-hint">Húzd a kosarat egérrel vagy ujjal, esetleg használd a nyílbillentyűket.</p>
+    </div>
+  </section>
+
+  <div class="derj-inner">
+    <section class="derj-rules" id="derj-rules">
+      <h2 class="derj-h2">Játékszabályzat</h2>
+      <p>A nyereményjáték hivatalos részvételi feltételeit és szabályzatát az alábbi linken találod. A feliratkozással elfogadod az abban foglaltakat.</p>
+      <!-- Cseréld a href-et a végleges játékszabályzat linkjére -->
+      <a class="derj-rules-link" href="DERJ_SZABALYZAT_LINK_IDE" target="_blank" rel="noopener">Játékszabályzat megtekintése</a>
+    </section>
+
+    <footer class="derj-footer">
+      <!-- Cseréld a href-et az adatkezelési tájékoztató linkjére -->
+      <p>A nyereményjátékot a DÉR Juice szervezi. Az adatkezelésről az <a href="DERJ_ADATKEZELES_LINK_IDE" target="_blank" rel="noopener">adatkezelési tájékoztatóban</a> olvashatsz bővebben.</p>
+      <p>© DÉR Juice, derjuice.hu</p>
+    </footer>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var root = document.getElementById("derj-landing");
+
+  /* ---------- Gyümölcs SVG-k, a DÉR Juice arculati színeivel ---------- */
+  function svgWrap(inner){
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+  }
+
+  var FRUITS = [
+    { name:"alma", svg:function(id){ return svgWrap(
+      '<defs><radialGradient id="g'+id+'" cx="35%" cy="30%" r="75%">' +
+      '<stop offset="0%" stop-color="#4FC79A"/><stop offset="100%" stop-color="#00A76D"/></radialGradient></defs>' +
+      '<path d="M50 32 C40 18 22 22 18 40 C14 60 24 84 42 90 C47 92 53 92 58 90 C76 84 86 60 82 40 C78 22 60 18 50 32 Z" fill="url(#g'+id+')"/>' +
+      '<path d="M50 32 C50 24 53 18 60 14" stroke="#6B4423" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M58 18 C66 14 72 18 70 26 C64 26 58 24 58 18 Z" fill="#6FA84D"/>'
+    ); } },
+    { name:"őszibarack", svg:function(id){ return svgWrap(
+      '<defs><radialGradient id="g'+id+'" cx="35%" cy="30%" r="75%">' +
+      '<stop offset="0%" stop-color="#F7B79A"/><stop offset="100%" stop-color="#F2916F"/></radialGradient></defs>' +
+      '<path d="M50 30 C39 18 20 24 18 42 C15 62 26 86 42 91 C47 93 53 93 58 91 C74 86 85 62 82 42 C80 24 61 18 50 30 Z" fill="url(#g'+id+')"/>' +
+      '<path d="M50 30 C48 50 48 70 50 88" stroke="#D9754F" stroke-width="2" fill="none" opacity="0.5"/>' +
+      '<path d="M50 30 C50 24 53 18 58 14" stroke="#6B4423" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M56 16 C64 12 70 16 68 24 C62 24 56 22 56 16 Z" fill="#6FA84D"/>'
+    ); } },
+    { name:"mangó", svg:function(id){ return svgWrap(
+      '<defs><linearGradient id="g'+id+'" x1="20%" y1="0%" x2="80%" y2="100%">' +
+      '<stop offset="0%" stop-color="#FDD877"/><stop offset="60%" stop-color="#FDB913"/><stop offset="100%" stop-color="#F36F21"/></linearGradient></defs>' +
+      '<ellipse cx="50" cy="55" rx="26" ry="36" transform="rotate(-18 50 55)" fill="url(#g'+id+')"/>' +
+      '<path d="M34 26 C38 18 46 16 50 20" stroke="#6B4423" stroke-width="3" fill="none" stroke-linecap="round"/>'
+    ); } },
+    { name:"narancs", svg:function(id){ return svgWrap(
+      '<defs><radialGradient id="g'+id+'" cx="35%" cy="30%" r="75%">' +
+      '<stop offset="0%" stop-color="#FBBF56"/><stop offset="100%" stop-color="#F36F21"/></radialGradient></defs>' +
+      '<circle cx="50" cy="55" r="32" fill="url(#g'+id+')"/>' +
+      '<circle cx="50" cy="23" r="4" fill="#6B4423"/>' +
+      '<path d="M52 22 C58 16 66 18 66 26 C60 27 54 26 52 22 Z" fill="#6FA84D"/>'
+    ); } },
+    { name:"gyömbér", svg:function(id){ return svgWrap(
+      '<defs><linearGradient id="g'+id+'" x1="0%" y1="0%" x2="100%" y2="100%">' +
+      '<stop offset="0%" stop-color="#FDE49A"/><stop offset="100%" stop-color="#FDB913"/></linearGradient></defs>' +
+      '<ellipse cx="42" cy="52" rx="22" ry="18" fill="url(#g'+id+')"/>' +
+      '<ellipse cx="64" cy="46" rx="16" ry="13" fill="url(#g'+id+')"/>' +
+      '<ellipse cx="55" cy="66" rx="17" ry="14" fill="url(#g'+id+')"/>' +
+      '<ellipse cx="34" cy="70" rx="12" ry="10" fill="url(#g'+id+')"/>' +
+      '<circle cx="45" cy="50" r="1.6" fill="#C9860B"/><circle cx="60" cy="60" r="1.6" fill="#C9860B"/><circle cx="38" cy="66" r="1.6" fill="#C9860B"/>'
+    ); } },
+    { name:"homoktövis", svg:function(id){ return svgWrap(
+      '<line x1="50" y1="18" x2="50" y2="50" stroke="#6B7B3F" stroke-width="3"/>' +
+      '<path d="M50 24 C58 18 66 22 62 30" fill="#6FA84D"/>' +
+      '<circle cx="38" cy="42" r="8" fill="#F3B93A"/>' +
+      '<circle cx="52" cy="50" r="8" fill="#F6C955"/>' +
+      '<circle cx="64" cy="40" r="8" fill="#F3B93A"/>' +
+      '<circle cx="46" cy="62" r="8" fill="#F6C955"/>' +
+      '<circle cx="60" cy="64" r="8" fill="#F3B93A"/>'
+    ); } },
+    { name:"feketeribizli", svg:function(id){ return svgWrap(
+      '<line x1="50" y1="18" x2="50" y2="48" stroke="#4F6B36" stroke-width="3"/>' +
+      '<path d="M50 22 C42 16 34 20 38 28" fill="#6FA84D"/>' +
+      '<circle cx="38" cy="44" r="9" fill="#645094"/>' +
+      '<circle cx="54" cy="50" r="9" fill="#4A3B6B"/>' +
+      '<circle cx="66" cy="42" r="9" fill="#645094"/>' +
+      '<circle cx="46" cy="64" r="9" fill="#4A3B6B"/>' +
+      '<circle cx="60" cy="66" r="9" fill="#4A3B6B"/>'
+    ); } }
+  ];
+
+  function basketSVG(){
+    return '<svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs>' +
+        '<linearGradient id="derjBasketGrad" x1="0%" y1="0%" x2="0%" y2="100%">' +
+          '<stop offset="0%" stop-color="#C68B4A"/><stop offset="100%" stop-color="#8A5A28"/>' +
+        '</linearGradient>' +
+        '<pattern id="derjWeave" width="9" height="9" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">' +
+          '<line x1="0" y1="0" x2="0" y2="9" stroke="#6B4423" stroke-width="2" opacity="0.3"/>' +
+        '</pattern>' +
+      '</defs>' +
+      '<path d="M20 42 L180 42 L163 122 Q100 134 37 122 Z" fill="url(#derjBasketGrad)"/>' +
+      '<path d="M20 42 L180 42 L163 122 Q100 134 37 122 Z" fill="url(#derjWeave)"/>' +
+      '<ellipse cx="100" cy="42" rx="82" ry="15" fill="#B5793B" stroke="#6B4423" stroke-width="3"/>' +
+      '<circle cx="100" cy="86" r="26" fill="#141210" stroke="#FFFFFF" stroke-width="1.4"/>' +
+      '<circle cx="100" cy="86" r="21.5" fill="none" stroke="#FFFFFF" stroke-width="0.6" opacity="0.55"/>' +
+      '<text x="100" y="82" text-anchor="middle" font-family="\'Playfair Display\', serif" font-weight="700" font-size="15" fill="#FFFFFF" letter-spacing="1">D\u00c9R</text>' +
+      '<text x="100" y="99" text-anchor="middle" font-family="\'Playfair Display\', serif" font-weight="400" font-size="14" fill="#FFFFFF">juice</text>' +
+    '</svg>';
+  }
+
+  function treeSVG(){
+    return '<svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="62" y="70" width="14" height="55" rx="4" fill="#6B4423"/>' +
+      '<ellipse cx="55" cy="55" rx="42" ry="36" fill="#3E6B2E"/>' +
+      '<ellipse cx="88" cy="45" rx="34" ry="30" fill="#6B9B4A"/>' +
+      '<ellipse cx="60" cy="30" rx="30" ry="26" fill="#9BC46A"/>' +
+    '</svg>';
+  }
+
+  root.querySelector("#derjTreeLeft").innerHTML = treeSVG();
+  root.querySelector("#derjTreeRight").innerHTML = treeSVG();
+
+  var stripEl = root.querySelector("#derjFruitStrip");
+  FRUITS.forEach(function(f, i){
+    var span = document.createElement("span");
+    span.innerHTML = f.svg("strip"+i);
+    stripEl.appendChild(span);
+  });
+
+  /* ---------- Játék állapot ---------- */
+  var DURATION = 30;
+  var START_SPAWN_MS = 1000;
+  var END_SPAWN_MS = 450;
+  var START_SPEED = 17;   // % stage-magasság / mp
+  var END_SPEED = 34;
+  var BASKET_WIDTH_PCT = 30;
+
+  var stage = root.querySelector("#derjStage");
+  var fruitLayer = root.querySelector("#derjFruitLayer");
+  var basketEl = root.querySelector("#derjBasket");
+  basketEl.innerHTML = basketSVG();
+  var flashEl = root.querySelector("#derjFlash");
+  var scoreVal = root.querySelector("#derjScoreVal");
+  var timerVal = root.querySelector("#derjTimerVal");
+  var livesVal = root.querySelector("#derjLivesVal").querySelector("span");
+
+  var state = {
+    screen: "start",
+    score: 0,
+    lives: 2,
+    timeLeft: DURATION,
+    fruits: [],
+    spawnId: null,
+    rafId: null,
+    lastTs: null,
+    startTs: null
+  };
+  var fruitGradCounter = 0;
+
+  function showOverlay(id){
+    root.querySelectorAll(".derj-overlay").forEach(function(o){ o.classList.add("derj-hidden"); });
+    root.querySelector("#"+id).classList.remove("derj-hidden");
+  }
+
+  function renderLives(){
+    var out = "";
+    for(var i=0;i<2;i++){
+      out += '<span class="' + (i < state.lives ? "" : "derj-lost") + '">\uD83E\uDDFA</span>';
+    }
+    livesVal.innerHTML = out;
+  }
+  function updateScoreUI(){ scoreVal.textContent = state.score; }
+  function updateTimerUI(){ timerVal.textContent = Math.max(0, Math.ceil(state.timeLeft)); }
+
+  function rectsOverlap(a,b){
+    return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+  function basketCatchRect(){
+    var r = basketEl.getBoundingClientRect();
+    var padX = r.width * 0.12;
+    return { left:r.left+padX, right:r.right-padX, top:r.top, bottom:r.top + r.height*0.55 };
+  }
+
+  function setBasketFromClientX(clientX){
+    var stageRect = stage.getBoundingClientRect();
+    var pct = ((clientX - stageRect.left) / stageRect.width * 100) - BASKET_WIDTH_PCT/2;
+    pct = Math.max(0, Math.min(100 - BASKET_WIDTH_PCT, pct));
+    basketEl.style.left = pct + "%";
+  }
+
+  stage.addEventListener("pointermove", function(e){
+    if(state.screen === "playing"){ setBasketFromClientX(e.clientX); }
+  });
+  stage.addEventListener("pointerdown", function(e){
+    if(state.screen === "playing"){ setBasketFromClientX(e.clientX); }
+  });
+  stage.addEventListener("keydown", function(e){
+    if(state.screen !== "playing") return;
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight"){
+      e.preventDefault();
+      var cur = parseFloat(basketEl.style.left) || 35;
+      var step = 6;
+      var next = cur + (e.key === "ArrowLeft" ? -step : step);
+      next = Math.max(0, Math.min(100 - BASKET_WIDTH_PCT, next));
+      basketEl.style.left = next + "%";
+    }
+  });
+
+  function spawnFruit(frac){
+    var type = FRUITS[Math.floor(Math.random()*FRUITS.length)];
+    var el = document.createElement("div");
+    el.className = "derj-fruit";
+    el.innerHTML = type.svg("f"+(fruitGradCounter++));
+    var leftPct = 5 + Math.random()*(95-14-5);
+    el.style.left = leftPct + "%";
+    el.style.top = "-16%";
+    fruitLayer.appendChild(el);
+    var speed = START_SPEED + (END_SPEED-START_SPEED)*frac + (Math.random()*4-2);
+    state.fruits.push({ el:el, topPct:-16, speed:speed, caught:false });
+  }
+
+  function scheduleSpawn(){
+    if(state.screen !== "playing") return;
+    var elapsed = (Date.now() - state.startTs) / 1000;
+    var frac = Math.min(elapsed / DURATION, 1);
+    var interval = START_SPAWN_MS + (END_SPAWN_MS - START_SPAWN_MS)*frac;
+    spawnFruit(frac);
+    state.spawnId = setTimeout(scheduleSpawn, interval);
+  }
+
+  function floatPopup(rect){
+    var stageRect = stage.getBoundingClientRect();
+    var span = document.createElement("span");
+    span.className = "derj-popup";
+    span.textContent = "+1";
+    span.style.left = (rect.left - stageRect.left) + "px";
+    span.style.top = (rect.top - stageRect.top) + "px";
+    fruitLayer.appendChild(span);
+    setTimeout(function(){ span.remove(); }, 700);
+  }
+
+  function removeFruit(f){
+    f.el.remove();
+    state.fruits = state.fruits.filter(function(x){ return x !== f; });
+  }
+
+  function catchFruit(f){
+    f.caught = true;
+    floatPopup(f.el.getBoundingClientRect());
+    removeFruit(f);
+    state.score++;
+    updateScoreUI();
+  }
+
+  function missFruit(f){
+    removeFruit(f);
+    state.lives--;
+    renderLives();
+    flashEl.classList.add("derj-show");
+    basketEl.classList.add("derj-shake");
+    setTimeout(function(){
+      flashEl.classList.remove("derj-show");
+      basketEl.classList.remove("derj-shake");
+    }, 350);
+    if(state.lives <= 0){ endGame("lives"); }
+  }
+
+  function loop(ts){
+    if(state.screen !== "playing"){ state.rafId = null; return; }
+    if(!state.lastTs) state.lastTs = ts;
+    var dt = Math.min(ts - state.lastTs, 50);
+    state.lastTs = ts;
+
+    state.timeLeft -= dt/1000;
+    if(state.timeLeft <= 0){
+      state.timeLeft = 0;
+      updateTimerUI();
+      endGame("time");
+      return;
+    }
+    updateTimerUI();
+
+    var catchRect = basketCatchRect();
+    var stageRect = stage.getBoundingClientRect();
+    state.fruits.slice().forEach(function(f){
+      if(f.caught) return;
+      f.topPct += f.speed*dt/1000;
+      f.el.style.top = f.topPct + "%";
+      var fr = f.el.getBoundingClientRect();
+      if(rectsOverlap(fr, catchRect)){
+        catchFruit(f);
+        return;
+      }
+      // A gyümölcs akkor "esik le", amikor a teteje is elhagyja a játéktér alját.
+      // Ilyenkor mindig levonunk egy életet, ha addig nem sikerült elkapni.
+      if(fr.top > stageRect.bottom){
+        missFruit(f);
+      }
+    });
+
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  function startGame(){
+    state.screen = "playing";
+    state.score = 0;
+    state.lives = 2;
+    state.timeLeft = DURATION;
+    state.fruits = [];
+    fruitLayer.innerHTML = "";
+    state.startTs = Date.now();
+    state.lastTs = null;
+    updateScoreUI();
+    updateTimerUI();
+    renderLives();
+    root.querySelector("#derjScreenStart").classList.add("derj-hidden");
+    if(state.spawnId) clearTimeout(state.spawnId);
+    scheduleSpawn();
+    if(state.rafId) cancelAnimationFrame(state.rafId);
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  function endGame(reason){
+    state.screen = "gameover";
+    if(state.spawnId) clearTimeout(state.spawnId);
+    if(state.rafId) cancelAnimationFrame(state.rafId);
+    root.querySelector("#derjGameOverTitle").textContent =
+      reason === "lives" ? "Elfogyott az életed" : "Lejárt az idő";
+    root.querySelector("#derjGameOverScore").textContent = state.score;
+    root.querySelector("#derjGameOverText").textContent =
+      "gyümölcsöt gyűjtöttél össze.";
+    showOverlay("derjScreenGameOver");
+  }
+
+  function resetToStart(){
+    state.screen = "start";
+    fruitLayer.innerHTML = "";
+    showOverlay("derjScreenStart");
+  }
+
+  root.querySelector("#derjBtnStart").addEventListener("click", startGame);
+  root.querySelector("#derjBtnRetry").addEventListener("click", startGame);
+
+  var lastScoreForSignup = 0;
+  root.querySelector("#derjBtnContinue").addEventListener("click", function(){
+    lastScoreForSignup = state.score;
+    showOverlay("derjScreenSignup");
+  });
+  root.querySelector("#derjBtnPlayAgain").addEventListener("click", resetToStart);
+
+  root.querySelector("#derjSignupForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var nameInput = root.querySelector("#derjNameInput");
+    var emailInput = root.querySelector("#derjEmailInput");
+    var errorEl = root.querySelector("#derjFormError");
+    var name = nameInput.value.trim();
+    var email = emailInput.value.trim();
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if(!name){
+      errorEl.textContent = "Add meg a neved.";
+      return;
+    }
+    if(!emailOk){
+      errorEl.textContent = "Adj meg egy érvényes email címet.";
+      return;
+    }
+    errorEl.textContent = "";
+
+    // A feliratkozásokat itt gyűjtjük memóriában (subscribers tömb).
+    // Éles bevezetéskor ezt egy valós backendre (pl. Make.com webhook,
+    // Google Sheet vagy CRM) érdemes kötni.
+    window.__derJuiceSubscribers = window.__derJuiceSubscribers || [];
+    window.__derJuiceSubscribers.push({ name:name, email:email, score:lastScoreForSignup });
+
+    root.querySelector("#derjThanksMsg").textContent =
+      name + ", rögzítettük a jelentkezésed " + lastScoreForSignup + " ponttal. Hamarosan jelentkezünk a nyertesekkel.";
+    nameInput.value = "";
+    emailInput.value = "";
+    showOverlay("derjScreenThanks");
+  });
+
+  renderLives();
+  updateTimerUI();
+})();
+</script>
