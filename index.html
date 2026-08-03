@@ -7,13 +7,14 @@
      https://derjuice.hu/wp-content/uploads/derjuice_gyumolcsfogo_header.png
      TÖLTSD FEL a WordPress médiatárba, és ha nem pontosan ez lesz a végleges
      URL, cseréld itt is (Ctrl+F "derjuice_gyumolcsfogo_header.png").
-  2) A három ikon (100gyumolcsle.png, derecskeialma.png, termeszetesparositas.png)
+  2) A három ikon (100gyumolcsle.svg, derecskeialma.svg, termeszetesparositas.svg)
      szintén a WordPress médiatárba kerül. Az URL-t ugyanezzel a Ctrl+F módszerrel
      tudod javítani, ha a végleges elérési út más lesz. Az ikonokat a kód
      automatikusan fehérre alakítja a színes háttéren.
   3) A játékszabályzat linkje már be van kötve:
      https://derjuice.hu/hu/jatekszabalyzat/
-  4) "DERJ_ADATKEZELES_LINK_IDE": az adatkezelési tájékoztató linkje
+  4) Az adatkezelési tájékoztató linkje már be van kötve:
+     https://derjuice.hu/hu/adatkezelesi-tajekoztato/
 
   A feliratkozási webhook már élesben be van kötve: minden feliratkozó
   (név, email, pontszám, időbélyeg) automatikusan megérkezik a Make.com
@@ -449,21 +450,21 @@
       <div class="derj-benefits">
         <div class="derj-benefit-card">
           <div class="derj-benefit-icon" style="background:#00A76D;">
-            <img src="https://derjuice.hu/wp-content/uploads/100gyumolcsle.png" alt="">
+            <img src="https://derjuice.hu/wp-content/uploads/100gyumolcsle.svg" alt="">
           </div>
           <h3>Prémium gyümölcslé</h3>
           <p>Csak kiváló minőségű, válogatott gyümölcsökből dolgozunk, ezért nincs szükség hozzáadott vízre, cukorra vagy ízfokozóra.</p>
         </div>
         <div class="derj-benefit-card">
           <div class="derj-benefit-icon" style="background:#DF242A;">
-            <img src="https://derjuice.hu/wp-content/uploads/derecskeialma.png" alt="">
+            <img src="https://derjuice.hu/wp-content/uploads/derecskeialma.svg" alt="">
           </div>
           <h3>Derecskei almából</h3>
           <p>Az almánk a Derecske térség éghajlatának és talajának köszönheti ropogós, jellegzetes ízét. A Derecske alma név földrajzi oltalom alatt áll.</p>
         </div>
         <div class="derj-benefit-card">
           <div class="derj-benefit-icon" style="background:#645094;">
-            <img src="https://derjuice.hu/wp-content/uploads/termeszetesparositas.png" alt="">
+            <img src="https://derjuice.hu/wp-content/uploads/termeszetesparositas.svg" alt="">
           </div>
           <h3>Természetes párosítások</h3>
           <p>A natúr almalevet olyan gyümölcsökkel párosítjuk, mint a feketeribizli, a homoktövis, a gyömbér vagy az őszibarack.</p>
@@ -569,7 +570,7 @@
   </section>
 
   <footer class="derj-footer">
-    <p>A nyereményjátékot a DÉR Juice szervezi. Az adatkezelésről az <a href="DERJ_ADATKEZELES_LINK_IDE" target="_blank" rel="noopener">adatkezelési tájékoztatóban</a> olvashatsz bővebben.</p>
+    <p>A nyereményjátékot a DÉR Juice szervezi. Az adatkezelésről az <a href="https://derjuice.hu/hu/adatkezelesi-tajekoztato/" target="_blank" rel="noopener">adatkezelési tájékoztatóban</a> olvashatsz bővebben.</p>
     <p>© DÉR Juice, derjuice.hu</p>
   </footer>
 
@@ -649,6 +650,21 @@
       '<circle cx="66" cy="42" r="9" fill="#645094"/>' +
       '<circle cx="46" cy="64" r="9" fill="#4A3B6B"/>' +
       '<circle cx="60" cy="66" r="9" fill="#4A3B6B"/>'
+    ); } },
+    { name:"meggy", svg:function(id){ return svgWrap(
+      '<defs>' +
+      '<radialGradient id="gm'+id+'" cx="35%" cy="30%" r="70%">' +
+      '<stop offset="0%" stop-color="#F27275"/><stop offset="60%" stop-color="#DF242A"/><stop offset="100%" stop-color="#8A1418"/>' +
+      '</radialGradient>' +
+      '</defs>' +
+      '<path d="M42 22 C50 12 62 14 66 26" stroke="#6B4423" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+      '<path d="M42 24 C46 32 40 42 34 46" stroke="#6B4423" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+      '<path d="M66 26 C64 36 68 46 60 52" stroke="#6B4423" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+      '<path d="M56 20 C70 16 82 24 76 34 C72 30 62 26 56 20 Z" fill="#6FA84D"/>' +
+      '<circle cx="34" cy="60" r="18" fill="url(#gm'+id+')"/>' +
+      '<circle cx="62" cy="66" r="18" fill="url(#gm'+id+')"/>' +
+      '<ellipse cx="28" cy="54" rx="4" ry="2.5" fill="#F9B5B7" opacity="0.7"/>' +
+      '<ellipse cx="56" cy="60" rx="4" ry="2.5" fill="#F9B5B7" opacity="0.7"/>'
     ); } }
   ];
 
