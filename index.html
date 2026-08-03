@@ -1,103 +1,210 @@
 <!--
-  DÉR JUICE — NYÁRI NYEREMÉNYJÁTÉK, BEÁGYAZHATÓ KÓDRÉSZLET
+  DÉR JUICE NYÁRI NYEREMÉNYJÁTÉK, BEÁGYAZHATÓ KÓDRÉSZLET
   Illeszd be egy egyéni HTML blokkba az aloldalon.
 
   Kitöltendő helyek (Ctrl+F rájuk):
-  1) "DERJ_LOGO_URL_IDE" — a DÉR Juice logó (lehetőleg átlátszó hátterű PNG) URL-je
-  2) "DERJ_SZABALYZAT_LINK_IDE" — a játékszabályzat dokumentum linkje
-  3) "DERJ_ADATKEZELES_LINK_IDE" — az adatkezelési tájékoztató linkje
+  1) A fejléc háttérkép (derjuice_gyumolcsfogo_header.png) URL-je jelenleg
+     https://derjuice.hu/wp-content/uploads/derjuice_gyumolcsfogo_header.png
+     TÖLTSD FEL a WordPress médiatárba, és ha nem pontosan ez lesz a végleges
+     URL, cseréld itt is (Ctrl+F "derjuice_gyumolcsfogo_header.png").
+  2) A három ikon (100gyumolcsle.png, derecskeialma.png, termeszetesparositas.png)
+     szintén a WordPress médiatárba kerül. Az URL-t ugyanezzel a Ctrl+F módszerrel
+     tudod javítani, ha a végleges elérési út más lesz. Az ikonokat a kód
+     automatikusan fehérre alakítja a színes háttéren.
+  3) "DERJ_SZABALYZAT_LINK_IDE": a játékszabályzat dokumentum linkje
+  4) "DERJ_ADATKEZELES_LINK_IDE": az adatkezelési tájékoztató linkje
+
   A feliratkozási webhook már élesben be van kötve: minden feliratkozó
   (név, email, pontszám, időbélyeg) automatikusan megérkezik a Make.com
-  "DÉR Juice feliratkozók" Data Store-jába (Data store ID: 175247,
-  scenario ID: 9599238, csapat: My Team). A böngésző memóriájában emellett
-  helyi biztonsági másolat is marad (window.__derJuiceSubscribers).
+  "DÉR Juice feliratkozók" Data Store-jába.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet">
 <style>
   #derj-landing, #derj-landing *{ box-sizing:border-box; }
   #derj-landing{
     font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color:#000000;
+    color:#1F1A17;
     background:#F3EEEA;
-    padding:56px 16px 64px;
-    line-height:1.5;
+    line-height:1.55;
+    overflow:hidden;
+    position:relative;
   }
-  #derj-landing .derj-inner{ max-width:920px; margin:0 auto; }
-  #derj-landing h1, #derj-landing h2{
+  #derj-landing .derj-inner{ width:100%; max-width:1080px; margin:0 auto; padding:0 20px; }
+
+  #derj-landing h1, #derj-landing h2, #derj-landing h3{
     font-family:'Playfair Display', Georgia, serif;
     margin:0;
-    color:#000000;
+    color:#1F1A17;
+    line-height:1.15;
   }
 
   /* ---------- HERO ---------- */
-  #derj-landing .derj-hero{ text-align:center; padding-bottom:40px; }
-  #derj-landing .derj-logo-badge{ width:120px; margin:0 auto 22px; }
-  #derj-landing .derj-logo-badge img{ width:100%; height:auto; display:block; }
-  #derj-landing .derj-h1{ font-size:2.2rem; font-weight:700; letter-spacing:-.01em; }
-  #derj-landing .derj-lead{
-    max-width:480px; margin:16px auto 0;
-    font-size:1.02rem; color:#3A322E;
+  #derj-landing .derj-hero{
+    position:relative;
+    padding:70px 20px 90px;
+    text-align:center;
+    color:#FFFFFF;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, rgba(31,26,23,.15), rgba(31,26,23,.25)),
+      url("https://derjuice.hu/wp-content/uploads/derjuice_gyumolcsfogo_header.png") center/cover no-repeat,
+      linear-gradient(135deg, #CA6E6C 0%, #856157 55%, #3E6B2E 100%);
   }
+  #derj-landing .derj-hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(253,185,19,.20) 0, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(0,167,109,.22) 0, transparent 50%);
+    pointer-events:none;
+  }
+  #derj-landing .derj-hero-inner{ position:relative; z-index:2; max-width:640px; margin:0 auto; }
+  #derj-landing .derj-logo-badge{
+    width:220px; max-width:60%; margin:0 auto 28px;
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,.25));
+  }
+  #derj-landing .derj-logo-badge img{ width:100%; height:auto; display:block; }
+  #derj-landing .derj-hero-eyebrow{
+    display:inline-block;
+    font-size:.72rem; font-weight:700; letter-spacing:.24em;
+    text-transform:uppercase;
+    background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.35);
+    padding:7px 16px; border-radius:999px;
+    margin-bottom:20px;
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
+  #derj-landing .derj-h1{
+    font-size:clamp(2rem, 6vw, 3.4rem);
+    font-weight:900;
+    letter-spacing:-.01em;
+    color:#FFFFFF;
+    text-shadow:0 3px 20px rgba(0,0,0,.25);
+  }
+  #derj-landing .derj-h1 em{ font-style:italic; color:#FDB913; font-weight:700; }
+  #derj-landing .derj-lead{
+    max-width:520px; margin:18px auto 0;
+    font-size:clamp(.95rem, 2.6vw, 1.1rem);
+    color:rgba(255,255,255,.94);
+  }
+  #derj-landing .derj-hero-cta{ margin-top:32px; }
+
   #derj-landing .derj-btn{
     display:inline-block;
     font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight:600;
-    font-size:.95rem;
-    background:#CA6E6C;
-    color:#FFFFFF;
+    font-weight:700;
+    font-size:1rem;
+    background:#FDB913;
+    color:#1F1A17;
     border:none;
     border-radius:999px;
-    padding:13px 32px;
+    padding:15px 34px;
     text-decoration:none;
     cursor:pointer;
-    margin-top:24px;
-    box-shadow:0 8px 18px rgba(202,110,108,.35);
-    transition:transform .15s ease, background .15s ease;
+    box-shadow:0 10px 24px rgba(0,0,0,.22);
+    transition:transform .18s ease, background .18s ease, box-shadow .18s ease;
   }
-  #derj-landing .derj-btn:hover{ background:#B4595A; transform:translateY(-2px); }
-  #derj-landing .derj-btn:focus-visible{ outline:3px solid #856157; outline-offset:2px; }
+  #derj-landing .derj-btn:hover{ background:#F36F21; color:#FFFFFF; transform:translateY(-2px); box-shadow:0 14px 28px rgba(0,0,0,.28); }
+  #derj-landing .derj-btn:focus-visible{ outline:3px solid #FFFFFF; outline-offset:3px; }
   #derj-landing .derj-btn-ghost{
-    background:none; color:#856157; box-shadow:none;
+    background:transparent; color:#856157; box-shadow:none;
     text-decoration:underline; padding:6px 10px; font-weight:500;
   }
-  #derj-landing .derj-btn-ghost:hover{ background:none; color:#000000; transform:none; }
+  #derj-landing .derj-btn-ghost:hover{ background:transparent; color:#1F1A17; transform:none; box-shadow:none; }
+
+  /* Dekor gyümölcs pöttyök a heroban */
+  #derj-landing .derj-hero-dots{
+    position:absolute; inset:0; z-index:1; pointer-events:none;
+  }
+  #derj-landing .derj-hero-dots span{
+    position:absolute; border-radius:50%; opacity:.65; filter:blur(.5px);
+    animation:derjFloat 8s ease-in-out infinite;
+  }
+  #derj-landing .derj-hero-dots span:nth-child(1){ width:22px; height:22px; top:14%; left:8%; background:#FDB913; animation-delay:0s; }
+  #derj-landing .derj-hero-dots span:nth-child(2){ width:14px; height:14px; top:70%; left:12%; background:#00A76D; animation-delay:1.5s; }
+  #derj-landing .derj-hero-dots span:nth-child(3){ width:18px; height:18px; top:22%; right:10%; background:#F36F21; animation-delay:.8s; }
+  #derj-landing .derj-hero-dots span:nth-child(4){ width:10px; height:10px; top:80%; right:18%; background:#645094; animation-delay:2.2s; }
+  #derj-landing .derj-hero-dots span:nth-child(5){ width:12px; height:12px; top:45%; right:6%; background:#DF242A; animation-delay:3s; }
+  @keyframes derjFloat{
+    0%,100%{ transform:translateY(0) scale(1); }
+    50%{ transform:translateY(-16px) scale(1.05); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #derj-landing .derj-hero-dots span{ animation:none; }
+  }
 
   /* ---------- BENEFITS ---------- */
-  #derj-landing .derj-benefits{
-    display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;
-    margin-top:8px;
+  #derj-landing .derj-benefits-section{
+    background:#F3EEEA;
+    padding:56px 0 40px;
+    position:relative;
   }
-  @media (max-width:720px){
-    #derj-landing .derj-benefits{ grid-template-columns:1fr; }
+  #derj-landing .derj-benefits-section::before{
+    content:""; position:absolute; top:-40px; left:0; right:0; height:80px;
+    background:#F3EEEA;
+    clip-path:polygon(0 100%, 100% 100%, 100% 0, 0 40%);
+  }
+  #derj-landing .derj-benefits{
+    display:grid; grid-template-columns:1fr; gap:16px;
+    position:relative;
+  }
+  @media (min-width:720px){
+    #derj-landing .derj-benefits{ grid-template-columns:repeat(3, 1fr); gap:22px; }
   }
   #derj-landing .derj-benefit-card{
-    background:#FFFFFF; border-radius:16px; padding:24px 20px;
-    box-shadow:0 6px 18px rgba(0,0,0,.06);
+    background:#FFFFFF; border-radius:20px;
+    padding:26px 22px;
+    box-shadow:0 8px 24px rgba(31,26,23,.08);
+    transition:transform .2s ease, box-shadow .2s ease;
   }
-  #derj-landing .derj-dot{
-    width:14px; height:14px; border-radius:50%; margin-bottom:14px;
+  #derj-landing .derj-benefit-card:hover{ transform:translateY(-4px); box-shadow:0 14px 30px rgba(31,26,23,.12); }
+  #derj-landing .derj-benefit-icon{
+    width:64px; height:64px; border-radius:18px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px;
+    color:#FFFFFF; font-weight:700;
+    box-shadow:0 8px 18px rgba(31,26,23,.12);
+  }
+  #derj-landing .derj-benefit-icon img{
+    width:64%; height:64%; object-fit:contain;
+    /* Fehérré alakítja a fekete ikonokat */
+    filter:brightness(0) invert(1);
   }
   #derj-landing .derj-benefit-card h3{
-    font-family:'Playfair Display', Georgia, serif;
-    font-size:1.05rem; margin:0 0 8px; font-weight:700;
+    font-size:1.15rem; font-weight:700; margin:0 0 8px;
   }
   #derj-landing .derj-benefit-card p{
-    font-size:.88rem; color:#3A322E; margin:0;
+    font-size:.94rem; color:#4A403A; margin:0;
   }
 
-  /* ---------- GAME SECTION ---------- */
-  #derj-landing .derj-game-section{ padding:56px 16px 8px; text-align:center; }
-  #derj-landing .derj-h2{ font-size:1.7rem; font-weight:700; }
+  /* ---------- GAME ---------- */
+  #derj-landing .derj-game-section{
+    padding:70px 20px 40px; text-align:center;
+    background:linear-gradient(180deg, #F3EEEA 0%, #E8DECE 100%);
+    position:relative;
+  }
+  #derj-landing .derj-section-label{
+    display:inline-block;
+    font-size:.68rem; font-weight:700; letter-spacing:.28em;
+    text-transform:uppercase; color:#CA6E6C;
+    margin-bottom:12px;
+  }
+  #derj-landing .derj-h2{
+    font-size:clamp(1.7rem, 4.5vw, 2.4rem);
+    font-weight:900;
+  }
+  #derj-landing .derj-h2 em{ font-style:italic; color:#CA6E6C; font-weight:700; }
   #derj-landing .derj-game-sub{
-    max-width:440px; margin:12px auto 30px;
-    font-size:.94rem; color:#3A322E;
+    max-width:520px; margin:14px auto 34px;
+    font-size:clamp(.95rem, 2.4vw, 1.05rem); color:#4A403A;
   }
   #derj-landing .derj-shell{
     width:100%; max-width:440px; margin:0 auto;
     background:#FFFFFF; border-radius:26px; padding:16px 16px 20px;
-    box-shadow:0 14px 34px rgba(0,0,0,.14);
+    box-shadow:0 20px 44px rgba(31,26,23,.18);
   }
   #derj-landing .derj-stage{
     position:relative; width:100%; aspect-ratio:3/4;
@@ -106,9 +213,7 @@
     touch-action:none; outline:none;
     box-shadow: inset 0 0 0 4px rgba(255,255,255,.45);
   }
-  #derj-landing .derj-cloud{
-    position:absolute; background:#fff; opacity:.75; border-radius:50%; filter:blur(1px);
-  }
+  #derj-landing .derj-cloud{ position:absolute; background:#fff; opacity:.75; border-radius:50%; filter:blur(1px); }
   #derj-landing .derj-cloud-a{ width:22%; height:7%; top:8%; left:-25%; animation:derjDriftA 38s linear infinite; }
   #derj-landing .derj-cloud-b{ width:16%; height:5%; top:17%; left:-30%; animation:derjDriftA 52s linear infinite; animation-delay:-18s; }
   @keyframes derjDriftA{ from{ transform:translateX(0); } to{ transform:translateX(650px); } }
@@ -182,78 +287,165 @@
   #derj-landing .derj-overlay{
     position:absolute; inset:0; background:rgba(251,244,230,.97);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:26px 22px; gap:14px; z-index:10;
+    text-align:center; padding:22px 20px; gap:12px; z-index:10;
   }
   #derj-landing .derj-overlay.derj-hidden{ display:none; }
-  #derj-landing .derj-overlay h2{ font-size:1.4rem; }
-  #derj-landing .derj-overlay p{ font-size:.88rem; margin:0; max-width:270px; }
+  #derj-landing .derj-overlay h2{ font-size:1.35rem; }
+  #derj-landing .derj-overlay p{ font-size:.9rem; margin:0; max-width:280px; color:#4A403A; }
   #derj-landing .derj-score-big{
-    font-family:'Playfair Display', serif; font-weight:700; font-size:2.6rem;
-    color:#9C351F; line-height:1;
+    font-family:'Playfair Display', serif; font-weight:900; font-size:2.8rem;
+    color:#CA6E6C; line-height:1;
   }
-  #derj-landing .derj-fruit-strip{ display:flex; gap:6px; margin:2px 0; }
+  #derj-landing .derj-fruit-strip{ display:flex; gap:6px; margin:4px 0 2px; flex-wrap:wrap; justify-content:center; }
   #derj-landing .derj-fruit-strip span{ width:30px; height:30px; display:block; }
   #derj-landing .derj-fruit-strip span svg{ width:100%; height:100%; display:block; }
 
-  #derj-landing .derj-form-row{ display:flex; flex-direction:column; gap:4px; width:100%; max-width:250px; text-align:left; }
+  #derj-landing .derj-form-row{ display:flex; flex-direction:column; gap:4px; width:100%; max-width:280px; text-align:left; }
   #derj-landing label{ font-size:.72rem; font-weight:600; color:#856157; }
   #derj-landing input{
-    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:.92rem;
-    padding:10px 12px; border-radius:10px; border:1.5px solid #EFE3CB;
-    background:#fff; color:#000000; width:100%;
+    font-family:'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:1rem;
+    padding:12px 14px; border-radius:12px; border:1.5px solid #EFE3CB;
+    background:#fff; color:#1F1A17; width:100%;
   }
-  #derj-landing input:focus-visible{ outline:2px solid #856157; border-color:#856157; }
-  #derj-landing .derj-error{ color:#9C351F; font-size:.74rem; min-height:1em; }
+  #derj-landing input:focus-visible{ outline:2px solid #CA6E6C; border-color:#CA6E6C; }
+  #derj-landing .derj-error{ color:#9C351F; font-size:.78rem; min-height:1em; }
 
-  #derj-landing .derj-hint{ text-align:center; font-size:.7rem; color:#856157; opacity:.85; margin:10px 4px 0; }
+  #derj-landing .derj-hint{ text-align:center; font-size:.72rem; color:#856157; opacity:.85; margin:12px 4px 0; }
 
-  /* ---------- RULES & FOOTER ---------- */
-  #derj-landing .derj-rules{
-    margin-top:56px; background:#FFFFFF; border-radius:16px;
-    padding:28px 26px; text-align:center;
+  /* ---------- PRIZES ---------- */
+  #derj-landing .derj-prizes-section{
+    padding:70px 20px 60px;
+    background:#1F1A17;
+    color:#F3EEEA;
+    text-align:center;
+    position:relative;
   }
-  #derj-landing .derj-rules p{ max-width:520px; margin:12px auto 18px; font-size:.92rem; color:#3A322E; }
-  #derj-landing .derj-rules-link{ color:#9C351F; font-weight:600; text-decoration:underline; }
-  #derj-landing .derj-footer{ margin-top:32px; text-align:center; }
+  #derj-landing .derj-prizes-section .derj-section-label{ color:#FDB913; }
+  #derj-landing .derj-prizes-section .derj-h2{ color:#FFFFFF; }
+  #derj-landing .derj-prizes-section .derj-h2 em{ color:#FDB913; }
+  #derj-landing .derj-prizes-intro{
+    max-width:520px; margin:14px auto 34px;
+    font-size:clamp(.95rem, 2.4vw, 1.05rem); color:rgba(243,238,234,.8);
+  }
+  #derj-landing .derj-prizes{
+    list-style:none; padding:0; margin:0 auto;
+    display:grid; grid-template-columns:1fr; gap:14px;
+    max-width:720px;
+  }
+  @media (min-width:720px){
+    #derj-landing .derj-prizes{ grid-template-columns:repeat(3, 1fr); gap:20px; }
+  }
+  #derj-landing .derj-prize{
+    background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border:1px solid rgba(253,185,19,.25);
+    border-radius:20px;
+    padding:26px 20px;
+    text-align:center;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  #derj-landing .derj-prize:hover{ transform:translateY(-4px); border-color:rgba(253,185,19,.6); }
+  #derj-landing .derj-prize-place{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:48px; height:48px; border-radius:50%;
+    background:#FDB913; color:#1F1A17;
+    font-family:'Playfair Display', serif; font-weight:900; font-size:1.4rem;
+    margin-bottom:14px;
+  }
+  #derj-landing .derj-prize:nth-child(2) .derj-prize-place{ background:#E8DECE; }
+  #derj-landing .derj-prize:nth-child(3) .derj-prize-place{ background:#CA6E6C; color:#FFFFFF; }
+  #derj-landing .derj-prize h3{
+    font-size:1.4rem; font-weight:900; color:#FFFFFF; margin:0 0 6px;
+  }
+  #derj-landing .derj-prize p{ font-size:.92rem; color:rgba(243,238,234,.75); margin:0; }
+  #derj-landing .derj-prize .derj-prize-value{
+    font-family:'Playfair Display', serif; font-style:italic;
+    color:#FDB913; font-size:1.05rem; margin-top:6px; display:block;
+  }
+  #derj-landing .derj-rules-link{
+    display:inline-block; margin-top:34px;
+    color:#FDB913; font-weight:600; text-decoration:underline;
+    text-underline-offset:4px;
+  }
+  #derj-landing .derj-rules-link:hover{ color:#FFFFFF; }
+
+  /* ---------- FOOTER ---------- */
+  #derj-landing .derj-footer{
+    padding:26px 20px 40px; text-align:center;
+    background:#F3EEEA;
+  }
   #derj-landing .derj-footer p{ font-size:.78rem; color:#856157; max-width:520px; margin:6px auto; }
   #derj-landing .derj-footer a{ color:#856157; }
+
+  /* ---------- MOBIL FINOMHANGOLÁS ---------- */
+  @media (max-width:520px){
+    #derj-landing .derj-hero{ padding:52px 18px 68px; }
+    #derj-landing .derj-logo-badge{ width:180px; margin-bottom:22px; }
+    #derj-landing .derj-hero-eyebrow{ font-size:.66rem; padding:6px 14px; }
+    #derj-landing .derj-benefits-section{ padding:44px 0 28px; }
+    #derj-landing .derj-game-section{ padding:56px 16px 32px; }
+    #derj-landing .derj-prizes-section{ padding:56px 18px 48px; }
+    #derj-landing .derj-shell{ padding:12px 12px 16px; border-radius:22px; }
+    #derj-landing .derj-chip{ font-size:.58rem; min-width:46px; padding:2px 8px 4px; }
+    #derj-landing .derj-chip span{ font-size:.95rem; }
+    #derj-landing .derj-btn{ padding:14px 28px; font-size:.95rem; }
+    #derj-landing .derj-benefit-card{ padding:22px 18px; border-radius:16px; }
+  }
 </style>
 
 <div id="derj-landing">
 
-  <div class="derj-inner">
-    <header class="derj-hero">
+  <!-- HERO -->
+  <header class="derj-hero">
+    <div class="derj-hero-dots" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="derj-hero-inner">
       <div class="derj-logo-badge">
-        <!-- Cseréld a src-t a DÉR Juice logó (lehetőleg átlátszó PNG) URL-jére -->
-        <img src="DERJ_LOGO_URL_IDE" alt="DÉR Juice logó">
+        <img src="https://derjuice.hu/wp-content/uploads/2022/03/derjuice_logo_header_szlogennel.svg" alt="DÉR Juice logó">
       </div>
-      <h1 class="derj-h1">Gyűjtsd be a nyár ízeit</h1>
-      <p class="derj-lead">Kapd el a lehulló gyümölcsöket a kosaradba, és nyerj a DÉR Juice nyári nyereményjátékán. Minél többet gyűjtesz, annál nagyobb az esélyed a nyereményre.</p>
-      <a href="#derj-game" class="derj-btn">Játsszunk</a>
-    </header>
+      <span class="derj-hero-eyebrow">Nyári nyereményjáték</span>
+      <h1 class="derj-h1">Gyűjtsd be <em>a nyár ízeit</em></h1>
+      <p class="derj-lead">Játssz a gyümölcsfogó játékunkkal, iratkozz fel, és nyerj DÉR Juice gyümölcslé csomagot akár 40 000 Ft értékben.</p>
+      <div class="derj-hero-cta">
+        <a href="#derj-game" class="derj-btn">Játsszunk</a>
+      </div>
+    </div>
+  </header>
 
-    <section class="derj-benefits">
-      <div class="derj-benefit-card">
-        <div class="derj-dot" style="background:#00A76D;"></div>
-        <h3>100% natúr összetevők</h3>
-        <p>A DÉR Juice leveit érett, válogatott gyümölcsökből készítjük, tartósítószer és hozzáadott cukor nélkül.</p>
+  <!-- BENEFITS -->
+  <section class="derj-benefits-section">
+    <div class="derj-inner">
+      <div class="derj-benefits">
+        <div class="derj-benefit-card">
+          <div class="derj-benefit-icon" style="background:#00A76D;">
+            <img src="https://derjuice.hu/wp-content/uploads/100gyumolcsle.png" alt="">
+          </div>
+          <h3>Prémium gyümölcslé</h3>
+          <p>Csak kiváló minőségű, válogatott gyümölcsökből dolgozunk, ezért nincs szükség hozzáadott vízre, cukorra vagy ízfokozóra.</p>
+        </div>
+        <div class="derj-benefit-card">
+          <div class="derj-benefit-icon" style="background:#DF242A;">
+            <img src="https://derjuice.hu/wp-content/uploads/derecskeialma.png" alt="">
+          </div>
+          <h3>Derecskei almából</h3>
+          <p>Az almánk a Derecske térség éghajlatának és talajának köszönheti ropogós, jellegzetes ízét. A Derecske alma név földrajzi oltalom alatt áll.</p>
+        </div>
+        <div class="derj-benefit-card">
+          <div class="derj-benefit-icon" style="background:#645094;">
+            <img src="https://derjuice.hu/wp-content/uploads/termeszetesparositas.png" alt="">
+          </div>
+          <h3>Természetes párosítások</h3>
+          <p>A natúr almalevet olyan gyümölcsökkel párosítjuk, mint a feketeribizli, a homoktövis, a gyömbér vagy az őszibarack.</p>
+        </div>
       </div>
-      <div class="derj-benefit-card">
-        <div class="derj-dot" style="background:#645094;"></div>
-        <h3>Üvegpalackos minőség</h3>
-        <p>Minden levünk újrahasznosítható üvegpalackba kerül, hogy a gyümölcs íze és értéke is megmaradjon.</p>
-      </div>
-      <div class="derj-benefit-card">
-        <div class="derj-dot" style="background:#F36F21;"></div>
-        <h3>Szezonális válogatás</h3>
-        <p>Almától a homoktövisig mindig az adott évszak legjobb gyümölcseiből dolgozunk.</p>
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 
+  <!-- GAME -->
   <section class="derj-game-section" id="derj-game">
-    <h2 class="derj-h2">Gyümölcsfogó játék</h2>
-    <p class="derj-game-sub">Harminc másodperced van, hogy minél több gyümölcsöt gyűjts össze. Két életed van, utána jöhet a feliratkozás a nyereményjátékra.</p>
+    <span class="derj-section-label">A játék</span>
+    <h2 class="derj-h2">Gyümölcsfogó <em>kihívás</em></h2>
+    <p class="derj-game-sub">Gyűjts össze minél több gyümölcsöt a kosaraddal 30 másodperc alatt, majd iratkozz fel, és nyerj DÉR Juice gyümölcslé csomagot akár 40 000 Ft értékben!</p>
 
     <div class="derj-shell">
       <div class="derj-stage" id="derjStage" tabindex="0" aria-label="Gyümölcsfogó játék, mozgasd a kosarat a nyílbillentyűkkel">
@@ -290,18 +482,18 @@
 
         <div class="derj-overlay derj-hidden" id="derjScreenSignup">
           <h2>Nyári nyereményjáték</h2>
-          <p>Add meg a neved és az email címed, és részt veszel a DÉR Juice nyári nyereményjátékában az elért pontszámoddal.</p>
+          <p>Add meg a neved és az email címed, és részt veszel a DÉR Juice nyári nyereményjátékában.</p>
           <form id="derjSignupForm">
             <div class="derj-form-row">
               <label for="derjNameInput">Név</label>
               <input type="text" id="derjNameInput" autocomplete="name" required>
             </div>
-            <div class="derj-form-row" style="margin-top:8px;">
+            <div class="derj-form-row" style="margin-top:10px;">
               <label for="derjEmailInput">Email cím</label>
               <input type="email" id="derjEmailInput" autocomplete="email" required>
             </div>
             <div class="derj-error" id="derjFormError"></div>
-            <button class="derj-btn" type="submit" style="margin-top:6px;">Feliratkozom</button>
+            <button class="derj-btn" type="submit" style="margin-top:8px;">Feliratkozom</button>
           </form>
         </div>
 
@@ -315,20 +507,40 @@
     </div>
   </section>
 
-  <div class="derj-inner">
-    <section class="derj-rules" id="derj-rules">
-      <h2 class="derj-h2">Játékszabályzat</h2>
-      <p>A nyereményjáték hivatalos részvételi feltételeit és szabályzatát az alábbi linken találod. A feliratkozással elfogadod az abban foglaltakat.</p>
-      <!-- Cseréld a href-et a végleges játékszabályzat linkjére -->
-      <a class="derj-rules-link" href="DERJ_SZABALYZAT_LINK_IDE" target="_blank" rel="noopener">Játékszabályzat megtekintése</a>
-    </section>
+  <!-- PRIZES -->
+  <section class="derj-prizes-section" id="derj-rules">
+    <span class="derj-section-label">Nyeremények</span>
+    <h2 class="derj-h2">Mit <em>nyerhetsz</em>?</h2>
+    <p class="derj-prizes-intro">A feliratkozók között három szerencsés játékos között sorsoljuk ki a DÉR Juice gyümölcslé csomagokat.</p>
 
-    <footer class="derj-footer">
-      <!-- Cseréld a href-et az adatkezelési tájékoztató linkjére -->
-      <p>A nyereményjátékot a DÉR Juice szervezi. Az adatkezelésről az <a href="DERJ_ADATKEZELES_LINK_IDE" target="_blank" rel="noopener">adatkezelési tájékoztatóban</a> olvashatsz bővebben.</p>
-      <p>© DÉR Juice, derjuice.hu</p>
-    </footer>
-  </div>
+    <ol class="derj-prizes">
+      <li class="derj-prize">
+        <div class="derj-prize-place">1</div>
+        <h3>40 000 Ft</h3>
+        <p>értékű DÉR Juice gyümölcslé csomag</p>
+        <span class="derj-prize-value">Fődíj</span>
+      </li>
+      <li class="derj-prize">
+        <div class="derj-prize-place">2</div>
+        <h3>30 000 Ft</h3>
+        <p>értékű DÉR Juice gyümölcslé csomag</p>
+        <span class="derj-prize-value">Második díj</span>
+      </li>
+      <li class="derj-prize">
+        <div class="derj-prize-place">3</div>
+        <h3>20 000 Ft</h3>
+        <p>értékű DÉR Juice gyümölcslé csomag</p>
+        <span class="derj-prize-value">Harmadik díj</span>
+      </li>
+    </ol>
+
+    <a class="derj-rules-link" href="DERJ_SZABALYZAT_LINK_IDE" target="_blank" rel="noopener">Játékszabályzat megtekintése</a>
+  </section>
+
+  <footer class="derj-footer">
+    <p>A nyereményjátékot a DÉR Juice szervezi. Az adatkezelésről az <a href="DERJ_ADATKEZELES_LINK_IDE" target="_blank" rel="noopener">adatkezelési tájékoztatóban</a> olvashatsz bővebben.</p>
+    <p>© DÉR Juice, derjuice.hu</p>
+  </footer>
 
 </div>
 
@@ -338,7 +550,6 @@
 
   var root = document.getElementById("derj-landing");
 
-  /* ---------- Gyümölcs SVG-k, a DÉR Juice arculati színeivel ---------- */
   function svgWrap(inner){
     return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
   }
@@ -440,11 +651,10 @@
     stripEl.appendChild(span);
   });
 
-  /* ---------- Játék állapot ---------- */
   var DURATION = 30;
   var START_SPAWN_MS = 1000;
   var END_SPAWN_MS = 450;
-  var START_SPEED = 17;   // % stage-magasság / mp
+  var START_SPEED = 17;
   var END_SPEED = 34;
   var BASKET_WIDTH_PCT = 30;
 
@@ -604,8 +814,6 @@
         catchFruit(f);
         return;
       }
-      // A gyümölcs akkor "esik le", amikor a teteje is elhagyja a játéktér alját.
-      // Ilyenkor mindig levonunk egy életet, ha addig nem sikerült elkapni.
       if(fr.top > stageRect.bottom){
         missFruit(f);
       }
@@ -670,19 +878,10 @@
     var email = emailInput.value.trim();
     var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    if(!name){
-      errorEl.textContent = "Add meg a neved.";
-      return;
-    }
-    if(!emailOk){
-      errorEl.textContent = "Adj meg egy érvényes email címet.";
-      return;
-    }
+    if(!name){ errorEl.textContent = "Add meg a neved."; return; }
+    if(!emailOk){ errorEl.textContent = "Adj meg egy érvényes email címet."; return; }
     errorEl.textContent = "";
 
-    // A feliratkozást elküldjük egy Make.com webhookra, ami innen egy
-    // Google Sheetbe (vagy más rendszerbe) tudja írni a jelentkezőket.
-    // Cseréld a WEBHOOK_URL értékét a saját Make webhook URL-edre.
     var WEBHOOK_URL = "https://hook.eu2.make.com/aythfxa1iwx9721k3sqp54df0b973nmc";
     var payload = { name:name, email:email, score:lastScoreForSignup, source:"der-juice-gyumolcsfogo" };
 
@@ -694,16 +893,13 @@
       }).catch(function(err){
         console.error("DÉR Juice feliratkozás webhook hiba:", err);
       });
-    } else {
-      console.warn("DÉR Juice: nincs beállítva webhook URL, a feliratkozás csak helyben (memóriában) tárolódik.");
     }
 
-    // Helyi biztonsági másolat is marad a böngésző memóriájában.
     window.__derJuiceSubscribers = window.__derJuiceSubscribers || [];
     window.__derJuiceSubscribers.push(payload);
 
     root.querySelector("#derjThanksMsg").textContent =
-      name + ", rögzítettük a jelentkezésed " + lastScoreForSignup + " ponttal. Hamarosan jelentkezünk a nyertesekkel.";
+      name + ", rögzítettük a jelentkezésed. Hamarosan jelentkezünk a nyertesekkel.";
     nameInput.value = "";
     emailInput.value = "";
     showOverlay("derjScreenThanks");
